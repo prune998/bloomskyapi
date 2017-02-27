@@ -89,8 +89,11 @@ func (d *Data) Get(c *connection) error {
 	if err != nil {
 		return err
 	}
+
 	defer resp.Body.Close()
-	//var record *Data
+	fmt.Println(resp)
+	fmt.Println(resp.Body)
+
 	if err := json.NewDecoder(resp.Body).Decode(d); err != nil {
 		return err
 	}
