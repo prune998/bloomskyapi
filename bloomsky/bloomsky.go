@@ -1,15 +1,19 @@
 package bloomsky
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
 
 // BsAPIVersion - API version, to support API changes one day
-const BsAPIVersion = "1.3"
+const APIVersion = "1.3"
 
 // DefaultBsAPIURL Default API URL
-const DefaultBsAPIURL = "https://api.bloomsky.com/api/skydata/"
+const DefaultAPIURL = "https://api.bloomsky.com/api/skydata/"
 
-// BloomSkyData - data from the BLoomSky API
-type BloomSkyData []struct {
+// Data - data from the BLoomSky API
+type Data []struct {
 	StreetName string `json:"street_name"`
 	UtcOffset  int    `json:"utc_offset"`
 	Outdoor    struct {
@@ -45,30 +49,53 @@ type BloomSkyData []struct {
 	DeviceID            string   `json:"device_id"`
 }
 
-// BsConfig - config to reach the API
-type BsConfig struct {
+// config - config to reach the API
+type connection struct {
 	APIVersion string
 	APIURL     string
 	APIKey     string
+	Client     *http.Client
 }
 
 // New - create the object to connect to the API
-func New(apiurl, apikey string) (*BsConfig, error) {
+func NewConfig(apiurl, apikey, apiversion string) (*connection, error) {
+	if apiversion == "" {
+		apiversion = APIVersion
+	}
 	if apiurl == "" {
-		apiurl = DefaultBsAPIURL
+		apiurl = DefaultAPIURL
 	}
 	if apikey == "" {
 		return nil, fmt.Errorf("API key can't be empty")
 	}
-	return &BsConfig{
-		APIVersion: BsAPIVersion,
-		APIURL:     apiurl,
-		APIKey:     apikey,
-	}
+
+	return &connection{
+			APIVersion: apiversion,
+			APIURL:     apiurl,
+			APIKey:     apikey,
+			Client:     &http.Client{},
+		},
+		nil
 }
 
 // Get - get data from the API
-func (*BloomSkyData) Get() {
+func (d *Data) Get(c *connection) error {
+	req, err := http.NewRequest("GET", c.APIURL, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Authorization", c.APIKey)
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	var record *Data
+	if err := json.NewDecoder(resp.Body).Decode(record); err != nil {
+		return err
+	}
+	d = record
+	return nil
 
 }
 
