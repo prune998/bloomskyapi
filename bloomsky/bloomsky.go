@@ -6,14 +6,14 @@ import (
 	"net/http"
 )
 
-// BsAPIVersion - API version, to support API changes one day
+// APIVersion - API version, to support API changes one day
 const APIVersion = "1.3"
 
-// DefaultBsAPIURL Default API URL
+// DefaultAPIURL Default API URL
 const DefaultAPIURL = "https://api.bloomsky.com/api/skydata/"
 
 // Data - data from the BLoomSky API
-type Data []struct {
+type Data struct {
 	StreetName string `json:"street_name"`
 	UtcOffset  int    `json:"utc_offset"`
 	Outdoor    struct {
@@ -57,7 +57,7 @@ type connection struct {
 	Client     *http.Client
 }
 
-// New - create the object to connect to the API
+// NewConfig - create the object to connect to the API
 func NewConfig(apiurl, apikey, apiversion string) (*connection, error) {
 	if apiversion == "" {
 		apiversion = APIVersion
@@ -90,18 +90,30 @@ func (d *Data) Get(c *connection) error {
 		return err
 	}
 	defer resp.Body.Close()
-	var record *Data
-	if err := json.NewDecoder(resp.Body).Decode(record); err != nil {
+	//var record *Data
+	if err := json.NewDecoder(resp.Body).Decode(d); err != nil {
 		return err
 	}
-	d = record
+	//d = record
 	return nil
 
 }
 
-// GetData -
-
 // PrintJsonData
+func (d *Data) PrintJsonData() error {
+	fmt.Printf("%s", d)
+	return nil
+}
+
+func (d *Data) PrintTemp() error {
+	fmt.Printf("%s", d)
+	return nil
+}
+
+func (d *Data) PrintLoc() error {
+	fmt.Printf("%s", d.StreetName)
+	return nil
+}
 
 // GetJpeg
 
