@@ -14,39 +14,46 @@ const DefaultAPIURL = "https://api.bloomsky.com/api/skydata/"
 
 // Data - data from the BLoomSky API
 type Data struct {
-	StreetName string `json:"street_name"`
-	UtcOffset  int    `json:"utc_offset"`
-	Outdoor    struct {
-		UvIndex        string  `json:"uv_index"`
-		Luminance      int     `json:"luminance"`
-		Temperature    float64 `json:"temperature"`
-		IsRaining      bool    `json:"is_raining"`
-		Humidity       int     `json:"humidity"`
-		Pressure       float64 `json:"pressure"`
-		IsNight        bool    `json:"is_night"`
-		ImageURL       string  `json:"image_url"`
-		ImageTimestamp int     `json:"image_timestamp"`
-		DeviceType     string  `json:"device_type"`
-		DataTimestamp  int     `json:"data_timestamp"`
-		Voltage        int     `json:"voltage"`
-	} `json:"outdoor"`
-	FavoritesCount interface{} `json:"favorites_count"`
-	Altitude       float64     `json:"altitude"`
-	Indoor         struct {
-		Temperature interface{} `json:"temperature"`
-		Humidity    interface{} `json:"humidity"`
-	} `json:"indoor"`
-	FollowersCount      int      `json:"followers_count"`
-	FullAddress         string   `json:"full_address"`
-	DeviceName          string   `json:"device_name"`
-	Latitude            float64  `json:"latitude"`
-	IsDst               int      `json:"is_dst"`
-	VideoUrls           []string `json:"video_urls"`
-	Longitude           float64  `json:"longitude"`
-	IsSearchable        bool     `json:"is_searchable"`
-	CityName            string   `json:"city_name"`
-	RegisteredTimestamp int      `json:"registered_timestamp"`
-	DeviceID            string   `json:"device_id"`
+	UTC      int
+	CityName string
+	Storm    struct {
+		RainRate           float64
+		SustainedWindSpeed float64
+		RainDaily          float64
+		WindDirection      string
+		WindGust           float64
+	}
+	Searchable   bool
+	DeviceName   string
+	RegisterTime int
+	DST          int
+	BoundedPoint string
+	LON          float64
+	Point        struct {
+	}
+	VideoList      []string
+	VideoListC     []interface{}
+	DeviceID       string
+	NumOfFollowers int
+	LAT            float64
+	ALT            float64
+	Data           struct {
+		Luminance   int
+		Temperature float64
+		ImageURL    string
+		TS          int
+		Rain        bool
+		Humidity    int
+		Pressure    float64
+		DeviceType  string
+		Voltage     int
+		Night       bool
+		UVIndex     string
+		ImageTS     int
+	}
+	FullAddress      string
+	StreetName       string
+	PreviewImageList []interface{}
 }
 
 // config - config to reach the API
@@ -79,42 +86,44 @@ func NewConfig(apiurl, apikey, apiversion string) (*connection, error) {
 }
 
 // Get - get data from the API
-func (d *Data) Get(c *connection) error {
+func Get(c *connection) (*Data, error) {
 	req, err := http.NewRequest("GET", c.APIURL, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Add("Authorization", c.APIKey)
 	resp, err := c.Client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	defer resp.Body.Close()
-	fmt.Println(resp)
-	fmt.Println(resp.Body)
 
-	if err := json.NewDecoder(resp.Body).Decode(d); err != nil {
-		return err
+	r := []Data{}
+	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+		return nil, err
 	}
+	//d = &r[0]
+	//	fmt.Printf("StreetName : %v\n", r[0].StreetName)
 	//d = record
-	return nil
+	// fmt.Printf("\n%s\n", r)
+	return &r[0], nil
 
 }
 
 // PrintJsonData
 func (d *Data) PrintJsonData() error {
-	fmt.Printf("%s", d)
+	fmt.Printf("%s\n", d)
 	return nil
 }
 
 func (d *Data) PrintTemp() error {
-	fmt.Printf("%s", d)
+	fmt.Printf("%s\n", d)
 	return nil
 }
 
 func (d *Data) PrintLoc() error {
-	fmt.Printf("%s", d.StreetName)
+	fmt.Printf("%s\n", d.StreetName)
 	return nil
 }
 

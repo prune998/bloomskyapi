@@ -2,11 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
-	"github.com/prune998/bloomskyapi/bloomsky"
+	"../bloomsky"
 )
 
+// "github.com/prune998/bloomskyapi/bloomsky"
 var (
 	apiurl  string // logfile to monitor
 	apikey  string // refresh rate of the log counters
@@ -32,10 +34,12 @@ func main() {
 		log.Fatal("Configuration issue")
 	}
 
-	var data bloomsky.Data
-	err = data.Get(c)
+	data, err := bloomsky.Get(c)
 	if err != nil {
 		log.Fatal("Error processing data, ", err)
 	}
 
+	fmt.Printf("StreetName : %s\n", data.StreetName)
+	fmt.Printf("%s\n", data)
+	data.PrintLoc()
 }
