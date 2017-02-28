@@ -6,13 +6,10 @@ import (
 	"net/http"
 )
 
-// APIVersion - API version, to support API changes one day
-const APIVersion = "1.3"
-
 // DefaultAPIURL Default API URL
 const DefaultAPIURL = "https://api.bloomsky.com/api/skydata/"
 
-// Data - data from the BLoomSky API
+// Data data from the BLoomSky API
 type Data struct {
 	UTC      int
 	CityName string
@@ -56,19 +53,17 @@ type Data struct {
 	PreviewImageList []interface{}
 }
 
-// config - config to reach the API
-type connection struct {
-	APIVersion string
-	APIURL     string
-	APIKey     string
-	Client     *http.Client
+// Client config to reach the API
+type Client struct {
+	APIVersion   string
+	APIURL       string
+	APIKey       string
+	*http.Client // TODO : learn Go Embeded struct
 }
 
-// NewConfig - create the object to connect to the API
-func NewConfig(apiurl, apikey, apiversion string) (*connection, error) {
-	if apiversion == "" {
-		apiversion = APIVersion
-	}
+// NewClient creates the object to connect to the API
+func NewClient(apiurl, apikey string) (*Client, error) {
+
 	if apiurl == "" {
 		apiurl = DefaultAPIURL
 	}
@@ -76,17 +71,17 @@ func NewConfig(apiurl, apikey, apiversion string) (*connection, error) {
 		return nil, fmt.Errorf("API key can't be empty")
 	}
 
-	return &connection{
-			APIVersion: apiversion,
-			APIURL:     apiurl,
-			APIKey:     apikey,
-			Client:     &http.Client{},
+	return &Client{
+			APIURL: apiurl,
+			APIKey: apikey,
+			Client: http.DefaultClient,
 		},
 		nil
 }
 
-// Get - get data from the API
-func Get(c *connection) (*Data, error) {
+// Fetch gets data from the API and Unmarshall Json
+func (c *Client) Fetch() (*Data, error) {
+
 	req, err := http.NewRequest("GET", c.APIURL, nil)
 	if err != nil {
 		return nil, err
@@ -113,7 +108,7 @@ func Get(c *connection) (*Data, error) {
 
 // PrintJsonData
 func (d *Data) PrintJsonData() error {
-	fmt.Printf("%s\n", d)
+	fmt.Printf("%v\n", d)
 	return nil
 }
 

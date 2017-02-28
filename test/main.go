@@ -29,12 +29,12 @@ func init() {
 func main() {
 	flag.Parse()
 
-	c, err := bloomsky.NewConfig(apiurl, apikey, "nil")
+	c, err := bloomsky.NewClient(apiurl, apikey)
 	if err != nil {
 		log.Fatal("Configuration issue")
 	}
 
-	data, err := bloomsky.Get(c)
+	data, err := c.Fetch()
 	if err != nil {
 		log.Fatal("Error processing data, ", err)
 	}
