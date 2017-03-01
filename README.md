@@ -1,9 +1,17 @@
-# bsextract
-BloomSky API access
+# BloomSkyAPI
+BloomSky API access in GO
 
 ## Description
-This application do these things :
- - connect to Bloomsky API
- - gather data and jpeg file from Sky2 every minut (configurable)
- - send metrics to Influxdb or Prometheus
- - at the end of the day, create a full day video
+Thisi s package to consume the BloomSky API.
+It is used to retreive data from your SKY2 and STORM modules.
+
+## Usage
+This is a go package, so go get it :
+
+```
+go get github.com/prune998/bloomskyapi
+```
+
+### Example application
+#### bsdumper
+This application connect to the API and dump the JSON data
