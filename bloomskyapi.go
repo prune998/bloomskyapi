@@ -1,4 +1,4 @@
-package bloomsky
+package bloomskyapi
 
 import (
 	"encoding/json"
@@ -108,12 +108,16 @@ func (c *Client) Fetch() (*Data, error) {
 
 // PrintJsonData
 func (d *Data) PrintJsonData() error {
-	fmt.Printf("%v\n", d)
+	jsonD, err := json.Marshal(d)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(jsonD))
 	return nil
 }
 
-func (d *Data) PrintTemp() error {
-	fmt.Printf("%s\n", d)
+func (d *Data) PrintJpeg() error {
+	fmt.Printf("(%d) %s\n", d.Data.TS, d.Data.ImageURL)
 	return nil
 }
 

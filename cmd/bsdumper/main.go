@@ -40,4 +40,5 @@ func main() {
 	// fmt.Printf("StreetName : %s\n", data.StreetName)
 	// fmt.Printf("%s\n", data)
 	data.PrintJsonData()
+	// data.PrintJpeg()
 }
