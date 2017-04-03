@@ -6,8 +6,7 @@ import (
 	"log"
 
 	"github.com/fogleman/gg"
-
-	"../bloomsky"
+	"github.com/prune998/bloomskyapi"
 )
 
 // "github.com/prune998/bloomskyapi/bloomsky"
@@ -35,7 +34,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	c, err := bloomsky.NewClient(apiurl, apikey, "")
+	c, err := bloomskyapi.NewClient(apiurl, apikey, "")
 	if err != nil {
 		log.Fatal("Configuration issue")
 	}
