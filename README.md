@@ -2,7 +2,7 @@
 BloomSky API access in GO
 
 ## Description
-Thisi s package to consume the BloomSky API.
+This i s package to consume the BloomSky API.
 It is used to retreive data from your SKY2 and STORM modules.
 
 ## Usage
