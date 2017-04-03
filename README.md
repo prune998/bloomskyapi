@@ -21,7 +21,7 @@ This application connect to the API and dump the JSON data
   "UTC": -5,
   "CityName": "Charny",
   "Storm": {
-    "UVIndex":  1
+    "UVIndex":  1,
     "RainRate": 0,
     "SustainedWindSpeed": 0,
     "RainDaily": 0,
