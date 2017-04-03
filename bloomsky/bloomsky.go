@@ -14,6 +14,7 @@ type Data struct {
 	UTC      int
 	CityName string
 	Storm    struct {
+		UVIndex            string
 		RainRate           float64
 		SustainedWindSpeed float64
 		RainDaily          float64
@@ -45,12 +46,12 @@ type Data struct {
 		DeviceType  string
 		Voltage     int
 		Night       bool
-		UVIndex     string
+		UVIndex     int
 		ImageTS     int
 	}
 	FullAddress      string
 	StreetName       string
-	PreviewImageList []interface{}
+	PreviewImageList []string
 }
 
 // Client config to reach the API
@@ -58,11 +59,12 @@ type Client struct {
 	APIVersion   string
 	APIURL       string
 	APIKey       string
+	MetricsType  string
 	*http.Client // TODO : learn Go Embeded struct
 }
 
 // NewClient creates the object to connect to the API
-func NewClient(apiurl, apikey string) (*Client, error) {
+func NewClient(apiurl, apikey, metricsType string) (*Client, error) {
 
 	if apiurl == "" {
 		apiurl = DefaultAPIURL
@@ -70,7 +72,11 @@ func NewClient(apiurl, apikey string) (*Client, error) {
 	if apikey == "" {
 		return nil, fmt.Errorf("API key can't be empty")
 	}
-
+	if metricsType != "" {
+		apiurl = apiurl + "?unit=" + metricsType
+	} else {
+		apiurl = apiurl + "?unit=intl"
+	}
 	return &Client{
 			APIURL: apiurl,
 			APIKey: apikey,
@@ -108,12 +114,14 @@ func (c *Client) Fetch() (*Data, error) {
 
 // PrintJsonData
 func (d *Data) PrintJsonData() error {
-	fmt.Printf("%v\n", d)
+	jsond, _ := json.Marshal(d)
+	fmt.Println(string(jsond))
+	// fmt.Printf("%+v\n", d)
 	return nil
 }
 
 func (d *Data) PrintTemp() error {
-	fmt.Printf("%s\n", d)
+	fmt.Printf("%f\n", d.Data.Temperature)
 	return nil
 }
 
