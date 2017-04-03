@@ -1,4 +1,4 @@
-package bloomsky
+package bloomskyapi
 
 import (
 	"encoding/json"

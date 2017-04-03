@@ -27,7 +27,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	c, err := bloomskyapi.NewClient(apiurl, apikey)
+	c, err := bloomskyapi.NewClient(apiurl, apikey, "")
 	if err != nil {
 		log.Fatal("Configuration issue")
 	}
@@ -37,8 +37,5 @@ func main() {
 		log.Fatal("Error processing data, ", err)
 	}
 
-	// fmt.Printf("StreetName : %s\n", data.StreetName)
-	// fmt.Printf("%s\n", data)
 	data.PrintJsonData()
-	// data.PrintJpeg()
 }
